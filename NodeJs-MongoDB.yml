@@ -1,0 +1,27 @@
+---
+- name: Set Up Node.js Application
+  hosts: localhost   # Change this to the appropriate target host
+  become: yes
+
+  tasks:
+    - name: Install Node.js and Npm
+      yum:
+        name: nodejs
+        state: present
+
+    - name: Install MongoDB client tools
+      command: npm install mongodb
+
+    - name: Configure MongoDB connection string
+      lineinfile:
+        path: /home/ec2-user/day5task/app.js   # Update the path to your app.js
+        regexp: '^const connectionStr = .*'
+        line: 'const connectionStr = "<mongodb string>";' # Your MongoDB URI
+
+    # Add more tasks for copying your application files, installing npm packages, etc.
+
+    - name: Start your application
+      command: node <"path"/app.js
+      async: 3600  # Set the desired timeout in seconds
+      poll: 0
+    # Add more tasks for running your application, starting services, etc.
